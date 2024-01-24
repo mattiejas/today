@@ -1,0 +1,38 @@
+[package]
+name = "api"
+version = "0.1.0"
+edition = "2021"
+default-run = "api"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+lib = { path = "../lib" }
+axum.workspace = true
+anyhow.workspace = true
+chrono.workspace = true
+serde = { workspace = true, features = ["derive"] }
+tokio = { workspace = true, features = ["full"] }
+cqrs-es.workspace = true
+async-trait.workspace = true
+async-graphql = { workspace = true }
+async-graphql-axum = "7.0"
+tower = { version = "0.4", features = ["full"] }
+tower-http = { version = "0.5", features = ["full"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["std", "env-filter"] }
+tracing-opentelemetry = "0.22.0"
+log = "0.4.20"
+dotenvy = "0.15.7"
+serde_json = "1.0.111"
+rand = "0.8.5"
+futures = "0.3.30"
+clap = { version = "4.4", features = ["derive"] }
+opentelemetry = { version = "0.21.0" }
+postgres-es = "0.4.10"
+uuid = { version = "*", features = [
+  "serde",
+  "v4",
+  "fast-rng",
+  "macro-diagnostics",
+] }

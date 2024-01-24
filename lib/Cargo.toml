@@ -1,0 +1,29 @@
+[package]
+name = "lib"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+axum.workspace = true
+anyhow.workspace = true
+tokio.workspace = true
+serde.workspace = true
+chrono.workspace = true
+async-graphql.workspace = true
+cqrs-es.workspace = true
+postgres-es = "0.4.10"
+async-trait.workspace = true
+bson = { version = "2", features = [
+  "chrono-0_4",
+] } # Needed for using chrono datetime in doc
+dotenvy = "0.15.7" # Used for loading environment variables
+qstring = "0.7"
+log = "0.4"
+prisma-client-rust = { git = "https://github.com/Brendonovich/prisma-client-rust", tag = "0.6.11", default-features = false, features = [
+  "postgresql",
+] }
+sqlx = { version = "0.7.3", features = ["postgres", "chrono"] }
+reqwest = { version = "0.11.4", features = ["json"] }
+jwt = "0.16"
+hmac = "0.12"
+sha2 = "0.10"
