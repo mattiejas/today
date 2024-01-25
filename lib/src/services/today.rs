@@ -1,12 +1,11 @@
 use crate::{
     domain::{
-        today::{Today, TodayBlockContent, TodayItem},
-        user,
+        today::{Today, TodayItem},
     },
     error::AppResult,
 };
 use anyhow::anyhow;
-use sqlx::{types::Json, PgPool};
+use sqlx::{PgPool};
 use uuid::Uuid;
 
 pub struct TodayService {
