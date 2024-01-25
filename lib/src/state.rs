@@ -1,6 +1,3 @@
-use std::sync::Arc;
-
-use postgres_es::PostgresCqrs;
 use sqlx::PgPool;
 
 #[derive(Clone)]

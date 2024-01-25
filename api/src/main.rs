@@ -51,7 +51,7 @@ async fn main() {
     // setup graphql
     let schema = Schema::build(
         lib::graphql::QueryRoot::default(),
-        async_graphql::EmptyMutation,
+        lib::graphql::MutationRoot::default(),
         async_graphql::EmptySubscription,
     )
     .data(state.clone())

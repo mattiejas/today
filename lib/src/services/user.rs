@@ -18,7 +18,7 @@ impl UserService {
         &self,
         username: String,
         email: String,
-        hashed_password: String,
+        password: String,
     ) -> AppResult<domain::user::User> {
         // check if username or email already exists
         let exists = sqlx::query!(
@@ -39,6 +39,9 @@ impl UserService {
         if exists {
             return Err(anyhow!("Username or email already exists").into());
         }
+
+        let hashed_password = bcrypt::hash(password, bcrypt::DEFAULT_COST)
+            .map_err(|_| anyhow!("Failed to hash password"))?;
 
         let user = sqlx::query_as!(
             domain::user::User,
