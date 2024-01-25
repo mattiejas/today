@@ -13,7 +13,9 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
-    "\n  query GetHistory {\n    history(pagination: { page: 0, limit: 10 }) {\n      id\n      title\n      date\n      items {\n        id\n        content\n      }\n    }\n  }\n": types.GetHistoryDocument,
+    "\n  mutation UpsertItem($todayId: Uuid!, $content: JSON!, $todayItemId: Uuid) {\n    upsertItem(todayId: $todayId, content: $content, todayItemId: $todayItemId) {\n      id\n      todayId\n      content {\n        type\n        payload\n      }\n    }\n  }\n": types.UpsertItemDocument,
+    "\n                fragment NewHistory on TodayItem {\n                  id\n                  todayId\n                  content {\n                    type\n                    payload\n                  }\n                }\n              ": types.NewHistoryFragmentDoc,
+    "\n  query GetHistory($pagination: Pagination!) {\n    history(pagination: $pagination) {\n      id\n      title\n      date\n      createdAt\n      updatedAt\n      items {\n        id\n        todayId\n        content {\n          type\n          payload\n        }\n      }\n    }\n  }\n": types.GetHistoryDocument,
 };
 
 /**
@@ -33,7 +35,15 @@ export function gql(source: string): unknown;
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query GetHistory {\n    history(pagination: { page: 0, limit: 10 }) {\n      id\n      title\n      date\n      items {\n        id\n        content\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetHistory {\n    history(pagination: { page: 0, limit: 10 }) {\n      id\n      title\n      date\n      items {\n        id\n        content\n      }\n    }\n  }\n"];
+export function gql(source: "\n  mutation UpsertItem($todayId: Uuid!, $content: JSON!, $todayItemId: Uuid) {\n    upsertItem(todayId: $todayId, content: $content, todayItemId: $todayItemId) {\n      id\n      todayId\n      content {\n        type\n        payload\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation UpsertItem($todayId: Uuid!, $content: JSON!, $todayItemId: Uuid) {\n    upsertItem(todayId: $todayId, content: $content, todayItemId: $todayItemId) {\n      id\n      todayId\n      content {\n        type\n        payload\n      }\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n                fragment NewHistory on TodayItem {\n                  id\n                  todayId\n                  content {\n                    type\n                    payload\n                  }\n                }\n              "): (typeof documents)["\n                fragment NewHistory on TodayItem {\n                  id\n                  todayId\n                  content {\n                    type\n                    payload\n                  }\n                }\n              "];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query GetHistory($pagination: Pagination!) {\n    history(pagination: $pagination) {\n      id\n      title\n      date\n      createdAt\n      updatedAt\n      items {\n        id\n        todayId\n        content {\n          type\n          payload\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetHistory($pagination: Pagination!) {\n    history(pagination: $pagination) {\n      id\n      title\n      date\n      createdAt\n      updatedAt\n      items {\n        id\n        todayId\n        content {\n          type\n          payload\n        }\n      }\n    }\n  }\n"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};

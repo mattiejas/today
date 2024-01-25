@@ -1,5 +1,6 @@
 use async_graphql::{ComplexObject, InputObject, Object, SimpleObject};
 use serde::{Deserialize, Serialize};
+use serde_json::json;
 use sqlx::{prelude::*, types::JsonValue};
 
 use crate::utils::uuid::Uuid;
@@ -18,12 +19,10 @@ pub struct Today {
 
 #[derive(Serialize, Deserialize, Clone, Debug, FromRow, SimpleObject)]
 #[serde(rename_all = "camelCase")]
-#[graphql(complex)]
 pub struct TodayItem {
     pub id: Uuid,
     pub today_id: Uuid,
 
-    #[graphql(skip)]
     pub content: TodayBlockContent,
 
     pub created_at: chrono::NaiveDateTime,
@@ -35,7 +34,11 @@ pub struct TodayItem {
 #[serde(tag = "type", content = "payload")]
 pub enum TodayBlockContent {
     Text(String),
-    Todo(bool),
+    Todo {
+        text: String,
+        #[serde(rename = "isCompleted")]
+        is_completed: bool,
+    },
 }
 
 impl From<JsonValue> for TodayBlockContent {
@@ -49,15 +52,17 @@ impl TodayBlockContent {
     #[graphql(name = "type")]
     async fn type_name(&self) -> String {
         match self {
-            TodayBlockContent::Text(_) => "TEXT".to_string(),
-            TodayBlockContent::Todo(_) => "TODO".to_string(),
+            TodayBlockContent::Text(_) => "text".to_string(),
+            TodayBlockContent::Todo { .. } => "todo".to_string(),
         }
     }
 
-    async fn payload(&self) -> String {
+    async fn payload(&self) -> JsonValue {
         match self {
-            TodayBlockContent::Text(text) => text.clone(),
-            TodayBlockContent::Todo(done) => done.to_string(),
+            TodayBlockContent::Text(text) => json!(text),
+            TodayBlockContent::Todo { text, is_completed } => {
+                json!({ "text": text, "isCompleted": is_completed })
+            }
         }
     }
 }
@@ -74,16 +79,6 @@ impl Today {
         let items = services.today.get_items(claims.sub, self.id.into()).await?;
 
         Ok(items)
-    }
-}
-
-#[ComplexObject]
-impl TodayItem {
-    async fn content(&self) -> String {
-        match &self.content {
-            TodayBlockContent::Text(text) => text.clone(),
-            TodayBlockContent::Todo(done) => done.to_string(),
-        }
     }
 }
 

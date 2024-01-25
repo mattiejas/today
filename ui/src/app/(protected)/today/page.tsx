@@ -1,7 +1,9 @@
-import { gql } from "@gql";
 import RouteGuard from "@/components/RouteGuard";
-import { getClient } from "@/lib/client";
 import { Input } from "@/components/ui/input";
+import { Today } from "./models";
+import TodayBlock from "./TodayBlock";
+import { useTodayHistory } from "@/app/actions";
+import { Suspense } from "react";
 
 export default async function Page() {
   return (
@@ -11,44 +13,21 @@ export default async function Page() {
   );
 }
 
-const query = gql(/* GraphQL */ `
-  query GetHistory {
-    history(pagination: { page: 0, limit: 10 }) {
-      id
-      title
-      date
-      items {
-        id
-        content
-      }
-    }
-  }
-`);
-
 async function TodayContainer(): Promise<JSX.Element> {
-  const { data, loading } = await getClient().query({ query });
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  const { data } = await useTodayHistory();
 
   return (
     <>
       <Input name="search" placeholder="Search" className="mb-12 shadow-lg shadow-violet-700/20" />
-      {data.history.map((day: any) => {
-        return <Today key={day.id} day={day} />;
+      {data?.history.map((day) => {
+        return <Today key={day.id} day={day as Today} />;
       })}
     </>
   );
 }
 
 interface TodayProps {
-  day: {
-    id: string;
-    title: string;
-    date: string;
-    items: { id?: string; content: string }[];
-  };
+  day: Today;
 }
 
 async function Today({ day }: Readonly<TodayProps>): Promise<JSX.Element> {
@@ -59,7 +38,11 @@ async function Today({ day }: Readonly<TodayProps>): Promise<JSX.Element> {
 
       <div className="flex flex-col gap-4">
         {day.items.map((item: any) => {
-          return <div key={item.id}>{item.content}</div>;
+          return (
+            <Suspense key={item.id} fallback={<div>Loading...</div>}>
+              <TodayBlock item={item} />
+            </Suspense>
+          );
         })}
       </div>
     </div>

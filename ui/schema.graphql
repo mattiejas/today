@@ -55,12 +55,17 @@ type Today {
 	items: [TodayItem!]!
 }
 
+type TodayBlockContent {
+	type: String!
+	payload: JSON!
+}
+
 type TodayItem {
 	id: Uuid!
 	todayId: Uuid!
+	content: TodayBlockContent!
 	createdAt: NaiveDateTime!
 	updatedAt: NaiveDateTime!
-	content: String!
 }
 
 scalar Uuid

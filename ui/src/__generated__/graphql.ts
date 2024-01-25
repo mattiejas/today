@@ -84,19 +84,39 @@ export type Today = {
   userId: Scalars['String']['output'];
 };
 
+export type TodayBlockContent = {
+  __typename?: 'TodayBlockContent';
+  payload: Scalars['JSON']['output'];
+  type: Scalars['String']['output'];
+};
+
 export type TodayItem = {
   __typename?: 'TodayItem';
-  content: Scalars['String']['output'];
+  content: TodayBlockContent;
   createdAt: Scalars['NaiveDateTime']['output'];
   id: Scalars['Uuid']['output'];
   todayId: Scalars['Uuid']['output'];
   updatedAt: Scalars['NaiveDateTime']['output'];
 };
 
-export type GetHistoryQueryVariables = Exact<{ [key: string]: never; }>;
+export type UpsertItemMutationVariables = Exact<{
+  todayId: Scalars['Uuid']['input'];
+  content: Scalars['JSON']['input'];
+  todayItemId?: InputMaybe<Scalars['Uuid']['input']>;
+}>;
 
 
-export type GetHistoryQuery = { __typename?: 'QueryRoot', history: Array<{ __typename?: 'Today', id: any, title: string, date: any, items: Array<{ __typename?: 'TodayItem', id: any, content: string }> }> };
+export type UpsertItemMutation = { __typename?: 'MutationRoot', upsertItem: { __typename?: 'TodayItem', id: any, todayId: any, content: { __typename?: 'TodayBlockContent', type: string, payload: any } } };
+
+export type NewHistoryFragment = { __typename?: 'TodayItem', id: any, todayId: any, content: { __typename?: 'TodayBlockContent', type: string, payload: any } } & { ' $fragmentName'?: 'NewHistoryFragment' };
+
+export type GetHistoryQueryVariables = Exact<{
+  pagination: Pagination;
+}>;
 
 
-export const GetHistoryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetHistory"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"history"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"pagination"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"page"},"value":{"kind":"IntValue","value":"0"}},{"kind":"ObjectField","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"items"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"content"}}]}}]}}]}}]} as unknown as DocumentNode<GetHistoryQuery, GetHistoryQueryVariables>;
+export type GetHistoryQuery = { __typename?: 'QueryRoot', history: Array<{ __typename?: 'Today', id: any, title: string, date: any, createdAt: any, updatedAt: any, items: Array<{ __typename?: 'TodayItem', id: any, todayId: any, content: { __typename?: 'TodayBlockContent', type: string, payload: any } }> }> };
+
+export const NewHistoryFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"NewHistory"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"TodayItem"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"todayId"}},{"kind":"Field","name":{"kind":"Name","value":"content"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"payload"}}]}}]}}]} as unknown as DocumentNode<NewHistoryFragment, unknown>;
+export const UpsertItemDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpsertItem"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"todayId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Uuid"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"content"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"JSON"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"todayItemId"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Uuid"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"upsertItem"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"todayId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"todayId"}}},{"kind":"Argument","name":{"kind":"Name","value":"content"},"value":{"kind":"Variable","name":{"kind":"Name","value":"content"}}},{"kind":"Argument","name":{"kind":"Name","value":"todayItemId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"todayItemId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"todayId"}},{"kind":"Field","name":{"kind":"Name","value":"content"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"payload"}}]}}]}}]}}]} as unknown as DocumentNode<UpsertItemMutation, UpsertItemMutationVariables>;
+export const GetHistoryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetHistory"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Pagination"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"history"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"pagination"},"value":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"items"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"todayId"}},{"kind":"Field","name":{"kind":"Name","value":"content"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"payload"}}]}}]}}]}}]}}]} as unknown as DocumentNode<GetHistoryQuery, GetHistoryQueryVariables>;
