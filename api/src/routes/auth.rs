@@ -1,6 +1,8 @@
 use anyhow::anyhow;
 use axum::{
     extract::State,
+    http::header,
+    response::IntoResponse,
     routing::{get, post},
     Extension, Json, Router,
 };
@@ -28,7 +30,7 @@ struct RegisterRequest {
 async fn register(
     services: Extension<AppServices>,
     Json(req): Json<RegisterRequest>,
-) -> AppResult<String> {
+) -> AppResult<impl IntoResponse> {
     let user = services
         .user
         .create_user(req.username, req.email, req.password)
@@ -37,30 +39,45 @@ async fn register(
     // generate jwt token
     let jwt_token = services.jwt.generate_token(&user)?;
 
-    Ok(jwt_token)
+    // set cookie
+    let mut headers = header::HeaderMap::new();
+    headers.insert(
+        header::SET_COOKIE,
+        header::HeaderValue::from_str(&format!("jwt={}", jwt_token))
+            .map_err(|_| -> AppError { anyhow!("Failed to generate cookie").into() })?,
+    );
+
+    Ok((headers, jwt_token))
 }
 
 #[derive(Deserialize)]
 struct LoginRequest {
-    email: String,
+    username: String,
     password: String,
 }
 
 async fn login(
     services: Extension<AppServices>,
     Json(req): Json<LoginRequest>,
-) -> AppResult<String> {
-    log::info!("Login request: {:?}, {:?}", req.email, req.password);
+) -> AppResult<impl IntoResponse> {
     let user = services
         .user
-        .login(req.email, req.password)
+        .login(req.username, req.password)
         .await
         .map_err(|_| AppError::Unauthorized(anyhow!("Invalid email or password").into()))?;
 
     // generate jwt token
     let jwt_token = services.jwt.generate_token(&user)?;
 
-    Ok(jwt_token)
+    // set cookie
+    let mut headers = header::HeaderMap::new();
+    headers.insert(
+        header::SET_COOKIE,
+        header::HeaderValue::from_str(&format!("jwt={}", jwt_token))
+            .map_err(|_| -> AppError { anyhow!("Failed to generate cookie").into() })?,
+    );
+
+    Ok((headers, jwt_token))
 }
 
 async fn get_logged_in_user(

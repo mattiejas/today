@@ -61,15 +61,15 @@ impl UserService {
         Ok(user)
     }
 
-    pub async fn login(&self, email: String, password: String) -> AppResult<domain::user::User> {
+    pub async fn login(&self, username: String, password: String) -> AppResult<domain::user::User> {
         let user = sqlx::query_as!(
             domain::user::UserWithPassword,
             r#"
             SELECT id, username, email, password as "password_hash: String"
             FROM users
-            WHERE email = $1
+            WHERE username = $1
             "#,
-            email
+            username
         )
         .fetch_one(&self.db_pool)
         .await?;
