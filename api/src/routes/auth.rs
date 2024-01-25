@@ -1,5 +1,9 @@
 use anyhow::anyhow;
-use axum::{routing::post, Extension, Json, Router};
+use axum::{
+    extract::State,
+    routing::{get, post},
+    Extension, Json, Router,
+};
 use lib::{
     error::{AppError, AppResult},
     services::AppServices,
@@ -11,6 +15,7 @@ pub fn router() -> Router<AppState> {
     Router::new()
         .route("/auth/register", post(register))
         .route("/auth/login", post(login))
+        .route("/auth/me", get(get_logged_in_user))
 }
 
 #[derive(Deserialize)]
@@ -56,4 +61,14 @@ async fn login(
     let jwt_token = services.jwt.generate_token(&user)?;
 
     Ok(jwt_token)
+}
+
+async fn get_logged_in_user(
+    claims: lib::services::jwt::UserClaims,
+    State(_): State<AppState>,
+    services: Extension<AppServices>,
+) -> AppResult<Json<lib::domain::user::User>> {
+    let user = services.user.get_user_by_id(claims.sub).await?;
+
+    Ok(Json(user))
 }

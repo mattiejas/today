@@ -22,3 +22,9 @@ Content-Type: application/json
     "email": "test@example.com",
     "password": "test"
 }
+
+
+###
+
+GET http://[::1]:3001/auth/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI0YjQxOWI3Ni00OGRhLTQ0ZjEtYjYwZS0yYWMwYzIwOWIxMzIiLCJhdWQiOiJ0b2RheSIsImlzcyI6InRvZGF5IiwiZXhwIjoxNzA2MjU0MzUxLCJuYW1lIjoidGVzdCIsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSJ9.qamXNVEkq_F5tonhBsy2QE4raMXVF1y9eBFR7h0LPOY

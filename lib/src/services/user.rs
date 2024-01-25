@@ -4,6 +4,7 @@ use crate::{
 };
 
 use anyhow::anyhow;
+use sqlx::types::Uuid;
 
 pub struct UserService {
     pub db_pool: sqlx::PgPool,
@@ -85,5 +86,21 @@ impl UserService {
             username: user.username,
             email: user.email,
         })
+    }
+
+    pub async fn get_user_by_id(&self, id: Uuid) -> AppResult<domain::user::User> {
+        let user = sqlx::query_as!(
+            domain::user::User,
+            r#"
+            SELECT id, username, email
+            FROM users
+            WHERE id = $1
+            "#,
+            id
+        )
+        .fetch_one(&self.db_pool)
+        .await?;
+
+        Ok(user)
     }
 }

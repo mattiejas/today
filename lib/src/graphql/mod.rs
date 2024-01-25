@@ -3,7 +3,7 @@ pub mod today;
 
 use crate::graphql::{sample::SampleQuery, today::TodayQuery};
 
-use async_graphql::{EmptyMutation, EmptySubscription};
+use async_graphql::{EmptySubscription};
 use async_graphql::{MergedObject, Schema};
 
 use self::today::TodayMutation;

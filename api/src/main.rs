@@ -42,10 +42,11 @@ async fn main() {
     let config = Config::new().expect("Failed to read config");
 
     // register services
-    let services = services::AppServices::new(config).await;
+    let services = services::AppServices::new(config.clone()).await;
 
     let state = AppState {
         db_pool: db_pool.clone(),
+        config: config.clone(),
     };
 
     // setup graphql
