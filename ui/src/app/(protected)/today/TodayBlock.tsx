@@ -18,6 +18,8 @@ export default function TodayBlock({ item }: Readonly<TodayBlockProps>): JSX.Ele
   const onChange = (content: TodayBlockContent, id?: string) => {
     upsertTodayBlock(item.todayId, content, id);
 
+    console.log("refreshing");
+
     startTransition(() => {
       router.refresh();
     });
