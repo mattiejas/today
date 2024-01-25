@@ -1,5 +1,11 @@
-use crate::{domain::today::Today, error::AppResult, services::AppServices};
-use async_graphql::{Context, InputObject, Object};
+use crate::{
+    domain::today::{Today, TodayBlockContent, TodayItem},
+    error::AppResult,
+    services::{today::UpsertTodayItem, AppServices},
+    utils::uuid::Uuid,
+};
+use async_graphql::{Context, InputObject, Json, Object};
+use jwt::claims;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Serialize, Deserialize, Debug, InputObject, Default)]
@@ -50,5 +56,44 @@ impl TodayMutation {
         let today = services.today.create_today(claims.sub).await?;
 
         Ok(today)
+    }
+
+    async fn upsert_item(
+        &self,
+        ctx: &Context<'_>,
+        today_id: Uuid,
+        content: Json<TodayBlockContent>,
+        today_item_id: Option<Uuid>,
+    ) -> AppResult<TodayItem> {
+        let services = ctx.data::<AppServices>()?;
+        let claims = ctx.data::<crate::services::jwt::UserClaims>()?;
+
+        log::info!("Updating item for user {}", claims.sub);
+
+        let today = services
+            .today
+            .upsert_item(UpsertTodayItem {
+                user_id: claims.sub,
+                today_id: today_id.into(),
+                today_item_id: today_item_id.map(|id| id.into()),
+                content: serde_json::json!(content.0),
+            })
+            .await?;
+
+        Ok(today)
+    }
+
+    async fn delete_item(&self, ctx: &Context<'_>, today_item_id: Uuid) -> AppResult<bool> {
+        let services = ctx.data::<AppServices>()?;
+        let claims = ctx.data::<crate::services::jwt::UserClaims>()?;
+
+        log::info!("Deleting item for user {}", claims.sub);
+
+        services
+            .today
+            .delete_item(claims.sub, today_item_id.into())
+            .await?;
+
+        Ok(true)
     }
 }

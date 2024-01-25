@@ -39,3 +39,9 @@ impl From<uuid::Uuid> for Uuid {
         Self(uuid)
     }
 }
+
+impl Into<Option<uuid::Uuid>> for Uuid {
+    fn into(self) -> Option<uuid::Uuid> {
+        Some(self.0)
+    }
+}

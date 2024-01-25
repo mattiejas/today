@@ -1,4 +1,4 @@
-use async_graphql::{ComplexObject, Object, SimpleObject};
+use async_graphql::{ComplexObject, InputObject, Object, SimpleObject};
 use serde::{Deserialize, Serialize};
 use sqlx::{prelude::*, types::JsonValue};
 
@@ -32,7 +32,7 @@ pub struct TodayItem {
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 #[serde(rename_all = "camelCase")]
-#[serde(tag = "type")]
+#[serde(tag = "type", content = "payload")]
 pub enum TodayBlockContent {
     Text(String),
     Todo(bool),
@@ -46,6 +46,7 @@ impl From<JsonValue> for TodayBlockContent {
 
 #[Object]
 impl TodayBlockContent {
+    #[graphql(name = "type")]
     async fn type_name(&self) -> String {
         match self {
             TodayBlockContent::Text(_) => "TEXT".to_string(),
@@ -84,4 +85,19 @@ impl TodayItem {
             TodayBlockContent::Todo(done) => done.to_string(),
         }
     }
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, InputObject)]
+pub struct TodayItemContentInput {
+    #[graphql(name = "type")]
+    #[serde(rename = "type")]
+    pub type_name: String,
+    pub payload: serde_json::Value,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, InputObject)]
+pub struct UpsertTodayItemObject {
+    pub today_id: Uuid,
+    pub today_item_id: Option<Uuid>,
+    pub content: TodayItemContentInput,
 }

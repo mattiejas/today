@@ -1,9 +1,12 @@
 use crate::{
-    domain::today::{Today, TodayItem},
+    domain::{
+        today::{Today, TodayBlockContent, TodayItem},
+        user,
+    },
     error::AppResult,
 };
 use anyhow::anyhow;
-use sqlx::PgPool;
+use sqlx::{types::Json, PgPool};
 use uuid::Uuid;
 
 pub struct TodayService {
@@ -92,12 +95,79 @@ impl TodayService {
             LEFT JOIN today t ON t.id = ti.today_id
             WHERE t.user_id = $1 AND t.id = $2
             "#,
-            today_id,
-            user_id
+            user_id,
+            today_id
         )
         .fetch_all(&self.db_pool)
         .await?;
 
         Ok(items)
     }
+
+    pub async fn upsert_item(&self, dto: UpsertTodayItem) -> AppResult<TodayItem> {
+        match dto.today_item_id {
+            Some(id) => {
+                let item = sqlx::query_as!(
+                    TodayItem,
+                    r#"
+                    UPDATE today_items
+                    SET content = $1, updated_at = CURRENT_TIMESTAMP
+                    WHERE id = $2
+                    RETURNING *
+                    "#,
+                    dto.content,
+                    id
+                )
+                .fetch_one(&self.db_pool)
+                .await?;
+
+                Ok(item)
+            }
+            None => {
+                let item = sqlx::query_as!(
+                    TodayItem,
+                    r#"
+                    INSERT INTO today_items (id, today_id, content, created_at, updated_at)
+                    VALUES (gen_random_uuid(), $1, $2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+                    RETURNING *
+                    "#,
+                    dto.today_id,
+                    dto.content
+                )
+                .fetch_one(&self.db_pool)
+                .await?;
+
+                Ok(item)
+            }
+        }
+    }
+
+    pub async fn delete_item(&self, user_id: Uuid, today_item_id: Uuid) -> AppResult<()> {
+        let item = sqlx::query!(
+            r#"
+            DELETE FROM today_items ti
+            USING today t
+            WHERE ti.id = $1 AND t.user_id = $2 AND ti.today_id = t.id
+            "#,
+            today_item_id,
+            user_id
+        )
+        .execute(&self.db_pool)
+        .await?;
+
+        if item.rows_affected() == 0 {
+            return Err(crate::error::AppError::NotFound(
+                anyhow!("Today item not found with id {}", today_item_id).into(),
+            ));
+        }
+
+        Ok(())
+    }
+}
+
+pub struct UpsertTodayItem {
+    pub user_id: Uuid,
+    pub today_id: Uuid,
+    pub today_item_id: Option<Uuid>,
+    pub content: serde_json::Value,
 }
