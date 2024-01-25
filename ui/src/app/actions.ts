@@ -33,29 +33,6 @@ export async function upsertTodayBlock(todayId: string, content: { type: string;
       content,
       todayItemId,
     },
-    update: (cache, { data }) => {
-      cache.modify({
-        fields: {
-          history(existingHistory = []) {
-            const newHistoryRef = cache.writeFragment({
-              data: data?.upsertItem,
-              fragment: gql(/* GraphQL */ `
-                fragment NewHistory on TodayItem {
-                  id
-                  todayId
-                  content {
-                    type
-                    payload
-                  }
-                }
-              `),
-            });
-
-            return [...existingHistory, newHistoryRef];
-          },
-        },
-      });
-    },
   });
 
   return result;
