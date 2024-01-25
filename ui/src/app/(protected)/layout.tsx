@@ -7,17 +7,17 @@ interface LayoutProps {
 export default async function Layout({ children }: Readonly<LayoutProps>) {
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="bg-indigo-600 rounded-lg mt-4">
+      <header className="bg-indigo-600 rounded-lg mt-4 mb-8 shadow-xl shadow-violet-700/20">
         <div className="flex items-center justify-between px-4 py-3">
           <div>
-            <h1 className="text-xl font-black text-white">Today</h1>
+            <h1 className="text-2xl font-bold text-white pb-[2px]">Today.</h1>
           </div>
 
           <LogoutButton />
         </div>
       </header>
       <main className="flex-grow">
-        <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">{children}</div>
+        <div>{children}</div>
       </main>
     </div>
   );

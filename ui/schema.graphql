@@ -1,0 +1,73 @@
+
+
+
+
+"""
+A scalar that can represent any JSON value.
+"""
+scalar JSON
+
+type MutationRoot {
+	createToday: Today!
+	upsertItem(todayId: Uuid!, content: JSON!, todayItemId: Uuid): TodayItem!
+	deleteItem(todayItemId: Uuid!): Boolean!
+}
+
+"""
+ISO 8601 calendar date without timezone.
+Format: %Y-%m-%d
+
+# Examples
+
+* `1994-11-13`
+* `2000-02-24`
+"""
+scalar NaiveDate
+
+"""
+ISO 8601 combined date and time without timezone.
+
+# Examples
+
+* `2015-07-01T08:59:60.123`,
+"""
+scalar NaiveDateTime
+
+input Pagination {
+	page: Int!
+	limit: Int!
+}
+
+type QueryRoot {
+	sample: String!
+	today: Today
+	history(pagination: Pagination!): [Today!]!
+}
+
+
+type Today {
+	id: Uuid!
+	title: String!
+	date: NaiveDate!
+	userId: String!
+	createdAt: NaiveDateTime!
+	updatedAt: NaiveDateTime!
+	items: [TodayItem!]!
+}
+
+type TodayItem {
+	id: Uuid!
+	todayId: Uuid!
+	createdAt: NaiveDateTime!
+	updatedAt: NaiveDateTime!
+	content: String!
+}
+
+scalar Uuid
+
+directive @include(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
+directive @skip(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
+schema {
+	query: QueryRoot
+	mutation: MutationRoot
+}
