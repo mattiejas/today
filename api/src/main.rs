@@ -37,7 +37,6 @@ async fn main() {
         .init();
 
     // setup database
-    let db = db::new().await.expect("Failed to connect to database");
     let db_pool = db::new_pool().await.expect("Failed to connect to database");
 
     let config = Config::new().expect("Failed to read config");
@@ -45,14 +44,8 @@ async fn main() {
     // register services
     let services = services::AppServices::new(config).await;
 
-    // make connection pool available to handlers
-    let (cqrs, clan_event_query) = lib::cqrs::cqrs_framework(db_pool.clone(), services.clone());
-
     let state = AppState {
-        prisma: db.clone(),
         db_pool: db_pool.clone(),
-        cqrs: cqrs.clone(),
-        clan_event_query: clan_event_query.clone(),
     };
 
     // setup graphql
@@ -79,8 +72,6 @@ async fn main() {
             "/graphql",
             get(routes::graphql::graphql_playground).post(routes::graphql::graphql_handler),
         )
-        .merge(routes::clan::router())
-        .merge(routes::event::router())
         .merge(routes::auth::router())
         .layer(middleware)
         .with_state(state);

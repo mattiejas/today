@@ -1,0 +1,14 @@
+###
+
+GET http://[::1]:3001/health
+
+###
+
+POST http://[::1]:3001/auth/register
+Content-Type: application/json
+
+{
+    "username": "test",
+    "email": "test@example.com",
+    "password": "test"
+}

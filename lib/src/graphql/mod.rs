@@ -1,8 +1,7 @@
-pub mod clan;
-pub mod event;
 pub mod sample;
+pub mod today;
 
-use crate::graphql::{clan::ClanQuery, event::EventQuery, sample::SampleQuery};
+use crate::graphql::{sample::SampleQuery, today::TodayQuery};
 
 use async_graphql::{EmptyMutation, EmptySubscription};
 use async_graphql::{MergedObject, Schema};
@@ -10,4 +9,4 @@ use async_graphql::{MergedObject, Schema};
 pub type AppSchema = Schema<QueryRoot, EmptyMutation, EmptySubscription>;
 
 #[derive(MergedObject, Default)]
-pub struct QueryRoot(EventQuery, SampleQuery, ClanQuery);
+pub struct QueryRoot(SampleQuery, TodayQuery);

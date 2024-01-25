@@ -36,3 +36,4 @@ uuid = { version = "*", features = [
   "fast-rng",
   "macro-diagnostics",
 ] }
+bcrypt = "0.15.0"

@@ -1,3 +1,2 @@
-pub mod clan;
-pub mod discord_token;
+pub mod today;
 pub mod user;

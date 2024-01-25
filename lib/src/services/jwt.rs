@@ -1,20 +1,13 @@
-use std::{ops::Add};
+use std::ops::Add;
 
 use anyhow::anyhow;
 use hmac::{digest::KeyInit, Hmac};
 use jwt::{SignWithKey, VerifyWithKey};
 use serde::{Deserialize, Serialize};
 use sha2::Sha256;
+use sqlx::types::Uuid;
 
-use crate::{domain::user::User, error::AppResult};
-
-#[derive(Debug, Clone)]
-pub struct JwtConfig {
-    pub secret: String,
-    pub audience: String,
-    pub issuer: String,
-    pub expiration: u64,
-}
+use crate::{config::JwtConfig, domain::user::User, error::AppResult};
 
 pub struct JwtService {
     config: JwtConfig,
@@ -22,12 +15,12 @@ pub struct JwtService {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UserClaims {
-    pub sub: i32,
+    pub sub: String,
     pub aud: String,
     pub iss: String,
     pub exp: i64,
     pub name: String,
-    pub avatar_hash: Option<String>,
+    pub email: String,
 }
 
 impl JwtService {
@@ -43,12 +36,12 @@ impl JwtService {
             .timestamp();
 
         let claims: UserClaims = UserClaims {
-            sub: user.id,
+            sub: user.id.to_string(),
             aud: self.config.audience.clone(),
             iss: self.config.issuer.clone(),
             exp: expiration,
-            name: user.name.clone(),
-            avatar_hash: user.avatar_hash.clone(),
+            name: user.username.clone(),
+            email: user.email.clone(),
         };
 
         let token_str = claims
@@ -58,7 +51,7 @@ impl JwtService {
         Ok(token_str)
     }
 
-    pub fn verify_token(&self, token: &str) -> AppResult<Option<i32>> {
+    pub fn verify_token(&self, token: &str) -> AppResult<Option<Uuid>> {
         let key = self.get_signing_key()?;
 
         let claims: UserClaims = token
@@ -77,7 +70,11 @@ impl JwtService {
             return Err(anyhow!("Token expired").into());
         }
 
-        Ok(Some(claims.sub))
+        if let Ok(uuid) = Uuid::parse_str(&claims.sub) {
+            return Ok(Some(uuid));
+        }
+
+        Err(anyhow!("Invalid user id").into())
     }
 
     fn get_signing_key(&self) -> AppResult<Hmac<Sha256>> {
