@@ -12,3 +12,13 @@ Content-Type: application/json
     "email": "test@example.com",
     "password": "test"
 }
+
+### 
+
+POST http://[::1]:3001/auth/login
+Content-Type: application/json
+
+{
+    "email": "test@example.com",
+    "password": "test"
+}

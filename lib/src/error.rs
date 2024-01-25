@@ -14,6 +14,7 @@ pub enum AppError {
     GraphQLError(SubError),
     BadRequest(SubError),
     NotFound(SubError),
+    Unauthorized(SubError),
 }
 
 impl std::error::Error for AppError {}
@@ -57,12 +58,14 @@ impl IntoResponse for AppError {
         let error_type = match self {
             AppError::BadRequest(_) => "BadRequest",
             AppError::NotFound(_) => "NotFound",
+            AppError::Unauthorized(_) => "Unauthorized",
             _ => "InternalServerError",
         };
 
         let status_code = match self {
             AppError::NotFound(_) => StatusCode::NOT_FOUND,
             AppError::BadRequest(_) => StatusCode::BAD_REQUEST,
+            AppError::Unauthorized(_) => StatusCode::UNAUTHORIZED,
             _ => StatusCode::INTERNAL_SERVER_ERROR,
         };
 
@@ -73,6 +76,7 @@ impl IntoResponse for AppError {
             AppError::SqlxError(e) => e.message,
             AppError::BadRequest(e) => e.message,
             AppError::NotFound(e) => e.message,
+            AppError::Unauthorized(e) => e.message,
         };
 
         let json = Json(ErrorMessage {
@@ -94,6 +98,7 @@ impl Display for AppError {
             AppError::SqlxError(e) => Some(e),
             AppError::BadRequest(e) => Some(e),
             AppError::NotFound(e) => Some(e),
+            AppError::Unauthorized(e) => Some(e),
         };
 
         if let Some(sub_error) = sub_error {
