@@ -1,10 +1,11 @@
-use std::{ops::Add};
+use std::ops::Add;
 
 use anyhow::anyhow;
 use axum::{
     async_trait,
     extract::{FromRef, FromRequestParts},
-    http::{request::Parts}, RequestPartsExt,
+    http::request::Parts,
+    RequestPartsExt,
 };
 use axum_extra::{
     headers::{authorization::Bearer, Authorization},
@@ -14,7 +15,7 @@ use hmac::{digest::KeyInit, Hmac};
 use jwt::{SignWithKey, VerifyWithKey};
 use serde::{Deserialize, Serialize};
 use sha2::Sha256;
-use sqlx::types::Uuid;
+use uuid::Uuid;
 
 use crate::{
     config::JwtConfig,

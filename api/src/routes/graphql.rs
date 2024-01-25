@@ -4,7 +4,7 @@ use axum::{
     extract,
     response::{Html, IntoResponse},
 };
-use lib::graphql::AppSchema;
+use lib::{graphql::AppSchema, services::jwt::UserClaims};
 use tracing::{Instrument, Level};
 
 pub(crate) async fn graphql_playground() -> impl IntoResponse {
@@ -14,6 +14,7 @@ pub(crate) async fn graphql_playground() -> impl IntoResponse {
 }
 
 pub(crate) async fn graphql_handler(
+    claims: UserClaims,
     schema: extract::Extension<AppSchema>,
     req: GraphQLRequest,
 ) -> GraphQLResponse {
@@ -21,7 +22,7 @@ pub(crate) async fn graphql_handler(
 
     log::info!("Processing GraphQL request");
 
-    let response = async move { schema.execute(req.into_inner()).await }
+    let response = async move { schema.execute(req.into_inner().data(claims)).await }
         .instrument(span.clone())
         .await;
 

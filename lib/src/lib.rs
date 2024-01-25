@@ -5,3 +5,4 @@ pub mod error;
 pub mod graphql;
 pub mod services;
 pub mod state;
+pub mod utils;
