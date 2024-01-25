@@ -1,7 +1,6 @@
 use anyhow::anyhow;
 use axum::{
     extract::State,
-    http::header,
     response::IntoResponse,
     routing::{get, post},
     Extension, Json, Router,
@@ -39,15 +38,7 @@ async fn register(
     // generate jwt token
     let jwt_token = services.jwt.generate_token(&user)?;
 
-    // set cookie
-    let mut headers = header::HeaderMap::new();
-    headers.insert(
-        header::SET_COOKIE,
-        header::HeaderValue::from_str(&format!("jwt={}", jwt_token))
-            .map_err(|_| -> AppError { anyhow!("Failed to generate cookie").into() })?,
-    );
-
-    Ok((headers, jwt_token))
+    Ok(jwt_token)
 }
 
 #[derive(Deserialize)]
@@ -69,15 +60,7 @@ async fn login(
     // generate jwt token
     let jwt_token = services.jwt.generate_token(&user)?;
 
-    // set cookie
-    let mut headers = header::HeaderMap::new();
-    headers.insert(
-        header::SET_COOKIE,
-        header::HeaderValue::from_str(&format!("jwt={}", jwt_token))
-            .map_err(|_| -> AppError { anyhow!("Failed to generate cookie").into() })?,
-    );
-
-    Ok((headers, jwt_token))
+    Ok(jwt_token)
 }
 
 async fn get_logged_in_user(

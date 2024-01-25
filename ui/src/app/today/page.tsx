@@ -1,8 +1,13 @@
+import RouteGuard from "@/components/RouteGuard";
 import { getClient } from "@/lib/client";
 import { gql } from "@apollo/client";
 
 export default async function Today() {
-  return <TodayContainer></TodayContainer>;
+  return (
+    <RouteGuard>
+      <TodayContainer />
+    </RouteGuard>
+  );
 }
 
 const query = gql`
