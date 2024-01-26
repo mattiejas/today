@@ -1,11 +1,9 @@
 use crate::{
-    domain::{
-        today::{Today, TodayItem},
-    },
+    domain::today::{Today, TodayItem},
     error::AppResult,
 };
 use anyhow::anyhow;
-use sqlx::{PgPool};
+use sqlx::PgPool;
 use uuid::Uuid;
 
 pub struct TodayService {
@@ -34,13 +32,6 @@ impl TodayService {
     }
 
     pub async fn create_today(&self, user_id: Uuid) -> AppResult<Today> {
-        // check if there is no today for the user
-        let today = self.get_today().await?;
-
-        if today.is_some() {
-            return Err(anyhow!("Today already exists").into());
-        }
-
         let title = chrono::Utc::now().format("%Y-%m-%d").to_string();
 
         let today = sqlx::query_as!(

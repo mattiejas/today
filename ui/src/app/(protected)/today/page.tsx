@@ -1,9 +1,11 @@
 import RouteGuard from "@/components/RouteGuard";
 import { Input } from "@/components/ui/input";
-import { Today } from "./models";
+import { Today } from "../../../__generated__/models";
 import TodayBlock from "./TodayBlock";
-import { useTodayHistory } from "@/app/actions";
+import { createToday, useTodayHistory } from "@/app/actions";
 import { Suspense } from "react";
+import { Button } from "@/components/ui/button";
+import { MdAddCircleOutline } from "react-icons/md";
 
 export default async function Page() {
   return (
@@ -18,7 +20,16 @@ async function TodayContainer(): Promise<JSX.Element> {
 
   return (
     <>
-      <Input name="search" placeholder="Search" className="mb-12 shadow-lg shadow-violet-700/20" />
+      <div className="flex flex-col justify-between items-center gap-4 mb-4">
+        <Input name="search" placeholder="Search" className="shadow-lg shadow-violet-700/20" />
+
+        <form action={createToday}>
+          <Button type="submit" className="shadow-lg rounded-full shadow-violet-700/20">
+            <span className="mr-2">Create new</span>
+            <MdAddCircleOutline className="text-xl" />
+          </Button>
+        </form>
+      </div>
       {data?.history.map((day) => {
         return <Today key={day.id} day={day as Today} />;
       })}

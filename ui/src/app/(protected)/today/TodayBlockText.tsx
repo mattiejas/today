@@ -1,5 +1,5 @@
 import ContentEditable from "@/components/ContentEditable";
-import { TodayBlockBaseProps, TodayBlockContentText } from "./models";
+import { TodayBlockBaseProps, TodayBlockContentText } from "../../../__generated__/models";
 
 interface TodayBlockTextProps {
   content: TodayBlockContentText;

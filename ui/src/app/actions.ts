@@ -72,3 +72,19 @@ export async function useTodayHistory() {
 
   return result;
 }
+
+const CREATE_TODAY = gql(`
+mutation CreateToday {
+  createToday {
+    id
+  }
+}`);
+
+export async function createToday() {
+  const client = getClient();
+  await client.mutate({
+    mutation: CREATE_TODAY,
+  });
+
+  redirect(`/today`);
+}

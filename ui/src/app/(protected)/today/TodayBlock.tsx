@@ -3,7 +3,7 @@
 import { upsertTodayBlock } from "@/app/actions";
 import TodayBlockText from "./TodayBlockText";
 import TodayBlockTodo from "./TodayBlockTodo";
-import { TodayBlockContent, TodayBlockContentType, TodayItem } from "./models";
+import { TodayBlockContent, TodayBlockContentType, TodayItem } from "../../../__generated__/models";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 
@@ -17,8 +17,6 @@ export default function TodayBlock({ item }: Readonly<TodayBlockProps>): JSX.Ele
 
   const onChange = (content: TodayBlockContent, id?: string) => {
     upsertTodayBlock(item.todayId, content, id);
-
-    console.log("refreshing");
 
     startTransition(() => {
       router.refresh();

@@ -1,5 +1,5 @@
 import { Checkbox } from "@/components/ui/checkbox";
-import { TodayBlockBaseProps, TodayBlockContentTodo } from "./models";
+import { TodayBlockBaseProps, TodayBlockContentTodo } from "../../../__generated__/models";
 
 interface TodayBlockTodoProps {
   content: TodayBlockContentTodo;
