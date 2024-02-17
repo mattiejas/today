@@ -62,7 +62,7 @@ impl TodayService {
             SELECT *
             FROM today t
             WHERE t.user_id = $1
-            ORDER BY t.date DESC
+            ORDER BY t.created_at DESC
             LIMIT $2
             OFFSET $3
             "#,
@@ -84,6 +84,7 @@ impl TodayService {
             FROM today_items ti
             LEFT JOIN today t ON t.id = ti.today_id
             WHERE t.user_id = $1 AND t.id = $2
+            ORDER BY ti.created_at DESC
             "#,
             user_id,
             today_id

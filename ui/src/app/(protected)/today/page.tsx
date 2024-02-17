@@ -1,9 +1,8 @@
 import RouteGuard from "@/components/RouteGuard";
 import { Input } from "@/components/ui/input";
-import { Today } from "../../../__generated__/models";
+import { Today, TodayBlockContentType } from "../../../__generated__/models";
 import TodayBlock from "./TodayBlock";
 import { createToday, useTodayHistory } from "@/app/actions";
-import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { MdAddCircleOutline } from "react-icons/md";
 
@@ -20,7 +19,7 @@ async function TodayContainer(): Promise<JSX.Element> {
 
   return (
     <>
-      <div className="flex flex-col justify-between items-center gap-4 mb-4">
+      <div className="flex flex-col justify-between items-center gap-4 mb-8">
         <Input name="search" placeholder="Search" className="shadow-lg shadow-violet-700/20" />
 
         <form action={createToday}>
@@ -30,6 +29,7 @@ async function TodayContainer(): Promise<JSX.Element> {
           </Button>
         </form>
       </div>
+
       {data?.history.map((day) => {
         return <Today key={day.id} day={day as Today} />;
       })}
@@ -47,14 +47,20 @@ async function Today({ day }: Readonly<TodayProps>): Promise<JSX.Element> {
       <h2 className="text-3xl font-extrabold">{day.title}</h2>
       <hr className="border-violet-300 shadow-sm shadow-violet-500/20" />
 
-      <div className="flex flex-col gap-4">
-        {day.items.map((item: any) => {
-          return (
-            <Suspense key={item.id} fallback={<div>Loading...</div>}>
-              <TodayBlock item={item} />
-            </Suspense>
-          );
+      <div className="flex flex-col gap-2">
+        {day.items.map((item) => {
+          return <TodayBlock key={item.id} item={item} />;
         })}
+
+        <TodayBlock
+          item={{
+            todayId: day.id,
+            content: {
+              type: TodayBlockContentType.Text,
+              payload: "",
+            },
+          }}
+        />
       </div>
     </div>
   );

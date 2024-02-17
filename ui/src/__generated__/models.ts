@@ -10,7 +10,7 @@ export interface Today {
 }
 
 export interface TodayItem {
-  id: string;
+  id?: string;
   todayId: string;
   content: TodayBlockContent;
 }

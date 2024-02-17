@@ -6,7 +6,9 @@ interface ContentEditableProps {
   value?: string;
 }
 
-export default function ContentEditable({ value, className, onChange }: Readonly<ContentEditableProps>): JSX.Element {
+type Props = Readonly<ContentEditableProps> & React.HTMLAttributes<HTMLDivElement>;
+
+export default function ContentEditable({ value, className, onChange, ...props }: Props): JSX.Element {
   const ref = useRef<HTMLDivElement>(null);
   const [timeout, setTimeoutState] = useState<NodeJS.Timeout>();
 
@@ -32,7 +34,7 @@ export default function ContentEditable({ value, className, onChange }: Readonly
   };
 
   return (
-    <div ref={ref} className={className} contentEditable onInput={onInput} suppressContentEditableWarning>
+    <div {...props} ref={ref} className={className} contentEditable onInput={onInput} suppressContentEditableWarning>
       {value}
     </div>
   );
