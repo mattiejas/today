@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+
+metadata:
+  name: api-config
+
+data:
+  database-url: postgres://postgres:postgres@host.minikube.internal:5432/today
+  jwt-secret: secret
+  jwt-expiration: '64800'
+  jwt-audience: audience
+  jwt-issuer: audience

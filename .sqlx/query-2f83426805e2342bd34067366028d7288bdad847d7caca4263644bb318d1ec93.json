@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            DELETE FROM today_items ti\n            USING today t\n            WHERE ti.id = $1 AND t.user_id = $2 AND ti.today_id = t.id\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "2f83426805e2342bd34067366028d7288bdad847d7caca4263644bb318d1ec93"
+}

@@ -4,12 +4,9 @@ use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
 use axum::Json;
 
-use prisma_client_rust::QueryError;
-
 #[derive(Debug, Clone)]
 pub enum AppError {
     AnyhowError(SubError),
-    PrismaError(SubError),
     SqlxError(SubError),
     GraphQLError(SubError),
     BadRequest(SubError),
@@ -71,7 +68,6 @@ impl IntoResponse for AppError {
 
         let message = match self {
             AppError::AnyhowError(e) => e.message,
-            AppError::PrismaError(e) => e.message,
             AppError::GraphQLError(e) => e.message,
             AppError::SqlxError(e) => e.message,
             AppError::BadRequest(e) => e.message,
@@ -93,7 +89,6 @@ impl Display for AppError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let sub_error = match self {
             AppError::AnyhowError(e) => Some(e),
-            AppError::PrismaError(e) => Some(e),
             AppError::GraphQLError(e) => Some(e),
             AppError::SqlxError(e) => Some(e),
             AppError::BadRequest(e) => Some(e),
@@ -118,12 +113,6 @@ impl From<anyhow::Error> for AppError {
 impl From<async_graphql::Error> for AppError {
     fn from(error: async_graphql::Error) -> Self {
         AppError::GraphQLError(SubError::new(format!("{:#?}", error)))
-    }
-}
-
-impl From<QueryError> for AppError {
-    fn from(error: QueryError) -> Self {
-        AppError::PrismaError(SubError::new(error.to_string()))
     }
 }
 

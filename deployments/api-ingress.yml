@@ -1,0 +1,11 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: api-ingress
+spec:
+  defaultBackend:
+    service:
+      name: today-api-service
+      port:
+        number: 80
+
