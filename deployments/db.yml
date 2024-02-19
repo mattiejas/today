@@ -1,23 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgresql
+  name: postgres
 spec:
-  ports:
-    - name: postgresql
-      protocol: TCP
-      port: 5432
-      targetPort: 5432
-
----
-
-apiVersion: v1
-kind: Endpoints
-metadata:
-  name: postgresql
-subsets:
-  - addresses:
-      - ip: 10.0.0.0
-    ports:
-      - port: 5432
-        name: postgresql
+  type: ExternalName
+  externalName: mattiejas.sh

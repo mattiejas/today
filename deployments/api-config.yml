@@ -2,11 +2,11 @@ apiVersion: v1
 kind: ConfigMap
 
 metadata:
-  name: api-config
+  name: today-api-config
 
 data:
-  database-url: postgres://postgres:postgres@host.minikube.internal:5432/today
-  jwt-secret: secret
-  jwt-expiration: '64800'
-  jwt-audience: audience
-  jwt-issuer: audience
+  database-url: "postgres://postgres:postgres@postgres:5432/today"
+  jwt-secret: "superduper-very-secret"
+  jwt-expiration: "64800"
+  jwt-audience: "mattiejas.sh"
+  jwt-issuer: "mattiejas.sh"

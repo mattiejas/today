@@ -28,3 +28,4 @@ bcrypt = "0.15"
 axum-extra = { version = "0.9", features = ["typed-header"] }
 uuid = { version = "1.7.0" }
 serde_json = { version = "1.0" }
+openssl = { version = "0.10", features = ["vendored"] }

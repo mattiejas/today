@@ -9,6 +9,9 @@ pub async fn new_pool() -> AppResult<DbPool> {
 
     let pool = default_postgress_pool(config.db_url.as_str()).await;
 
+    sqlx::migrate!("../migrations").run(&pool).await
+        .expect("Failed to run migrations");
+
     Ok(pool)
 }
 
