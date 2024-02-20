@@ -23,4 +23,4 @@ jobs:
 
           
     - name: Build API image
-      run: docker buildx build -t mattiejas/today-api:latest-arm64 -f .\api.dockerfile --platform linux/arm64 --push .
+      run: docker buildx build -t mattiejas/today-api:latest-arm64 -f ./api.dockerfile --platform linux/arm64 --push .
