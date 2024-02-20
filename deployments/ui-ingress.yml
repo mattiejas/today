@@ -7,7 +7,7 @@ spec:
   entryPoints:
     - web
   routes:
-    - match: Host(`mattiejas.sh`)
+    - match: Host(`today.mattiejas.sh`) || Host(`www.today.mattiejas.sh`)
       kind: Rule
       services:
         - kind: Service
@@ -25,7 +25,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`mattiejas.sh`)
+    - match: Host(`today.mattiejas.sh`) || Host(`www.today.mattiejas.sh`)
       kind: Rule
       services:
         - kind: Service
@@ -34,4 +34,6 @@ spec:
   tls:
     certResolver: "mattiejasresolver"
     domains:
-      - main: "mattiejas.sh"
+      - main: "today.mattiejas.sh"
+        sans:
+          - "www.today.mattiejas.sh"
