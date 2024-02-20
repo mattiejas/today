@@ -13,7 +13,6 @@ ENV CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc CC_aarch
 WORKDIR /usr/src/today-api
 
 COPY ./Cargo.toml ./Cargo.toml
-COPY ./Cargo.lock ./Cargo.lock
 COPY ./api ./api
 COPY ./migrations ./migrations
 COPY ./lib ./lib
