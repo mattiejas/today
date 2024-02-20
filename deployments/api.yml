@@ -16,7 +16,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         - name: today-api
-          image: mattiejas/today-api:latest-arm64
+          image: mattiejas/today-api:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 3001

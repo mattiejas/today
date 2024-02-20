@@ -1,0 +1,38 @@
+name: Build & Deploy
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Docker Login
+        uses: docker/login-action@v3.0.0
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build & Push API Image
+        run: docker buildx build -t mattiejas/today-api:latest -f ./api.dockerfile --platform linux/arm64 --push .
+
+      - name: Build & Push UI Image
+        run: docker buildx build -t mattiejas/today-ui:latest -f ./ui.dockerfile --platform linux/arm64 --push .
+
+      - uses: actions-hub/kubectl@master
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+
+      - uses: actions-hub/kubectl@master
+        with:
+          args: apply -f ./deployments/api.yml
+
+      - uses: actions-hub/kubectl@master
+        with:
+          args: apply -f ./deployments/ui.yml
