@@ -36,8 +36,8 @@ jobs:
 
       - uses: actions-hub/kubectl@master
         with:
-          args: apply -f ./deployments/api.yml
+          args: apply -f ./deployments/api.yml --insecure-skip-tls-verify
 
       - uses: actions-hub/kubectl@master
         with:
-          args: apply -f ./deployments/ui.yml
+          args: apply -f ./deployments/ui.yml --insecure-skip-tls-verify
