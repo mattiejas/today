@@ -1,4 +1,4 @@
-name: Build & Deploy
+name: Build & Deploy UI
 
 on:
   push:
@@ -24,9 +24,6 @@ jobs:
         with:
           platforms: linux/arm64
 
-      - name: Build & Push API Image
-        run: docker buildx build -t mattiejas/today-api:latest -f ./api.dockerfile --platform linux/arm64 --push .
-
       - name: Build & Push UI Image
         run: docker buildx build -t mattiejas/today-ui:latest -f ./ui.dockerfile --platform linux/arm64 --push .
 
@@ -34,10 +31,4 @@ jobs:
         env:
           KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
         with:
-          args: apply -f ./deployments/api.yml --insecure-skip-tls-verify
-
-      - uses: actions-hub/kubectl@master
-        env:
-          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
-        with:
-          args: apply -f ./deployments/ui.yml --insecure-skip-tls-verify
+          args: rollout restart deployment today-ui --insecure-skip-tls-verify
