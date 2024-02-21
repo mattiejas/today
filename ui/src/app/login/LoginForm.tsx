@@ -48,7 +48,7 @@ export default function LoginForm({ error }: Readonly<LoginFormProps>): JSX.Elem
             <hr className="my-6 w-full border-t-2 border-violet-300"/>
 
             <div className="flex flex-col gap-4">
-                <h2 className="text-xl font-bold">Don't have an account?</h2>
+                <h2 className="text-xl font-bold">Don&apos;t have an account?</h2>
                 <Button asChild variant="secondary">
                     <a href="/register">Register</a>
                 </Button>

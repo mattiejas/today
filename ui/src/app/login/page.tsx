@@ -1,5 +1,10 @@
 import LoginForm from "./LoginForm";
 
-export default async function Login({ searchParams }: Readonly<{ searchParams: { [key: string]: string | string[] | undefined } }>) {
-  return <LoginForm error={searchParams.error} />;
+interface LoginProps {
+  searchParams: { [key: string]: string | string[] | undefined }
+}
+
+export default async function Login({ searchParams }: Readonly<LoginProps>) {
+  const error = searchParams.error as string | undefined;
+  return <LoginForm error={error} />;
 }
