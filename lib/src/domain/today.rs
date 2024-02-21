@@ -22,6 +22,7 @@ pub struct Today {
 pub struct TodayItem {
     pub id: Uuid,
     pub today_id: Uuid,
+    pub sort_order: i32,
 
     pub content: TodayBlockContent,
 

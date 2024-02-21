@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS today_items (
     id UUID PRIMARY KEY,
     today_id UUID NOT NULL,
     content JSON NOT NULL,
+    sort_order INT NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
     FOREIGN KEY (today_id) REFERENCES today(id)

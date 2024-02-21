@@ -10,6 +10,7 @@ use lib::{
 
 use tower::ServiceBuilder;
 use tower_http::{trace::TraceLayer, ServiceBuilderExt};
+use tower_http::cors::{Any, CorsLayer};
 
 mod routes;
 
@@ -60,8 +61,13 @@ async fn main() {
     .finish();
 
     // setup middleware
+    let cors_layer = CorsLayer::new()
+        .allow_origin(Any)
+        .allow_headers(Any);
+
     let middleware = ServiceBuilder::new()
         .layer(TraceLayer::new_for_http())
+        .layer(cors_layer)
         .layer(Extension(schema))
         .layer(Extension(services))
         .compression();

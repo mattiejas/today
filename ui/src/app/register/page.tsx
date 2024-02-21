@@ -1,10 +1,12 @@
-import RegisterForm from "./RegisterForm";
+import RegisterForm from './RegisterForm'
 
 interface RegisterProps {
-    searchParams: { [key: string]: string | string[] | undefined }
+  searchParams: Record<string, string | string[] | undefined>
 }
 
-export default async function Register({ searchParams }: Readonly<RegisterProps>) {
-    const error = searchParams.error as string | undefined;
-    return <RegisterForm error={error}/>;
+export default async function Register({
+  searchParams,
+}: Readonly<RegisterProps>): Promise<JSX.Element> {
+  const error = searchParams.error as string | undefined
+  return <RegisterForm error={error} />
 }

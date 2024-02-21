@@ -1,53 +1,61 @@
-import { TodayBlockContent as GraphqlTodayBlockContent } from "@/__generated__/graphql";
+import { TodayBlockContent as GraphqlTodayBlockContent } from '@/__generated__/graphql'
 
 export interface Today {
-  id: string;
-  title: string;
-  date: string;
-  createdAt: string;
-  updatedAt: string;
-  items: TodayItem[];
+  id: string
+  title: string
+  date: string
+  createdAt: string
+  updatedAt: string
+  items: TodayItem[]
 }
 
 export interface TodayItem {
-  id?: string;
-  todayId: string;
-  content: TodayBlockContent;
+  id: string
+  todayId: string
+  sortOrder: number
+  content: TodayBlockContent
 }
 
 export interface TodayBlockContentBase {
-  type: TodayBlockContentType;
+  type: TodayBlockContentType
 }
 
 export enum TodayBlockContentType {
-  Text = "text",
-  Todo = "todo",
+  Text = 'text',
+  Todo = 'todo',
 }
 
 export interface TodayBlockContentText {
-  type: TodayBlockContentType.Text;
-  payload: string;
+  type: TodayBlockContentType.Text
+  payload: string
 }
 
 export interface TodayBlockContentTodo {
-  type: TodayBlockContentType.Todo;
+  type: TodayBlockContentType.Todo
   payload: {
-    text: string;
-    isCompleted: boolean;
-  };
+    text: string
+    isCompleted: boolean
+  }
 }
 
-export type TodayBlockContent = TodayBlockContentBase & (TodayBlockContentText | TodayBlockContentTodo);
+export type TodayBlockContent = TodayBlockContentBase &
+  (TodayBlockContentText | TodayBlockContentTodo)
 
-export function parseTodayItemContent(req: GraphqlTodayBlockContent): TodayBlockContent {
+export function parseTodayItemContent(
+  req: GraphqlTodayBlockContent,
+): TodayBlockContent {
   return {
     type: req.type as TodayBlockContentType,
     payload: req.payload,
-  };
+  }
 }
 
 export interface TodayBlockBaseProps {
-  item: TodayItem;
-  isLoading: boolean;
-  onChange: (content: TodayBlockContent, id?: string) => void;
+  item: TodayItem
+  selectedItemId?: string
+  isLoading: boolean
+  onChange: (content: TodayBlockContent, id?: string) => void
+  onItemFocus: (id: string) => void
+  insert: (insertAt: number) => void
+  contentEditableId: string
 }

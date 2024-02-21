@@ -1,20 +1,29 @@
-import { Checkbox } from "@/components/ui/checkbox";
-import { TodayBlockBaseProps, TodayBlockContentTodo } from "../../../__generated__/models";
+import { Checkbox } from '@/components/ui/checkbox'
+import {
+  type TodayBlockBaseProps,
+  type TodayBlockContentTodo,
+} from '@gql/models'
 
 interface TodayBlockTodoProps {
-  content: TodayBlockContentTodo;
+  content: TodayBlockContentTodo
 }
 
-type Props = TodayBlockBaseProps & TodayBlockTodoProps;
+type Props = TodayBlockBaseProps & TodayBlockTodoProps
 
-export default function TodayBlockTodo({ item, isLoading, content, onChange }: Readonly<Props>): JSX.Element {
+export default function TodayBlockTodo({
+  item,
+  isLoading,
+  content,
+  onChange,
+  contentEditableId,
+}: Readonly<Props>): JSX.Element {
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-3" id={contentEditableId}>
       <Checkbox
         checked={content.payload.isCompleted}
         id={item.id}
         onCheckedChange={() => {
-          if (isLoading) return;
+          if (isLoading) return
 
           onChange(
             {
@@ -24,11 +33,11 @@ export default function TodayBlockTodo({ item, isLoading, content, onChange }: R
                 isCompleted: !content.payload.isCompleted,
               },
             },
-            item.id
-          );
+            item.id,
+          )
         }}
       />
       <label htmlFor={item.id}>{content.payload.text}</label>
     </div>
-  );
+  )
 }

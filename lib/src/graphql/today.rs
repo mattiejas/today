@@ -27,6 +27,14 @@ impl TodayQuery {
         Ok(today)
     }
 
+    async fn today_by_id(&self, ctx: &Context<'_>, today_id: Uuid) -> AppResult<Option<Today>> {
+        let services = ctx.data::<AppServices>()?;
+
+        let today = services.today.get_today_by_id(today_id.into()).await?;
+
+        Ok(today)
+    }
+
     async fn history(&self, ctx: &Context<'_>, pagination: Pagination) -> AppResult<Vec<Today>> {
         let services = ctx.data::<AppServices>()?;
         let claims = ctx.data::<crate::services::jwt::UserClaims>()?;
@@ -63,6 +71,7 @@ impl TodayMutation {
         ctx: &Context<'_>,
         today_id: Uuid,
         content: Json<TodayBlockContent>,
+        insert_at: Option<i32>,
         today_item_id: Option<Uuid>,
     ) -> AppResult<TodayItem> {
         let services = ctx.data::<AppServices>()?;
@@ -75,6 +84,7 @@ impl TodayMutation {
             .upsert_item(UpsertTodayItem {
                 user_id: claims.sub,
                 today_id: today_id.into(),
+                insert_at,
                 today_item_id: today_item_id.map(|id| id.into()),
                 content: serde_json::json!(content.0),
             })

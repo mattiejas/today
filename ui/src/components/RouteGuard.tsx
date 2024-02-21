@@ -1,33 +1,35 @@
-"use server";
+'use server'
 
-import config from "@/lib/config";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+import config from '@/lib/config'
+import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
 
-async function isAuthenticated() {
-  const token = cookies().get("token")?.value;
+async function isAuthenticated(): Promise<boolean> {
+  const token = cookies().get('token')?.value
 
-  if (!token) {
-    return false;
+  if (token === undefined) {
+    return false
   }
 
   const res = await fetch(`${config.apiBaseUrl}/auth/me`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
-  });
+  })
 
-  return res.ok;
+  return res.ok
 }
 
 interface RouteGuardProps {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
-export default async function RouteGuard({ children }: Readonly<RouteGuardProps>) {
+export default async function RouteGuard({
+  children,
+}: Readonly<RouteGuardProps>): Promise<JSX.Element> {
   if (await isAuthenticated()) {
-    return <>{children}</>;
+    return <>{children}</>
   }
 
-  return redirect("/login");
+  return redirect('/login')
 }

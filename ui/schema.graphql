@@ -9,7 +9,7 @@ scalar JSON
 
 type MutationRoot {
 	createToday: Today!
-	upsertItem(todayId: Uuid!, content: JSON!, todayItemId: Uuid): TodayItem!
+	upsertItem(todayId: Uuid!, content: JSON!, insertAt: Int, todayItemId: Uuid): TodayItem!
 	deleteItem(todayItemId: Uuid!): Boolean!
 }
 
@@ -41,6 +41,7 @@ input Pagination {
 type QueryRoot {
 	sample: String!
 	today: Today
+	todayById(todayId: Uuid!): Today
 	history(pagination: Pagination!): [Today!]!
 }
 
@@ -63,6 +64,7 @@ type TodayBlockContent {
 type TodayItem {
 	id: Uuid!
 	todayId: Uuid!
+	sortOrder: Int!
 	content: TodayBlockContent!
 	createdAt: NaiveDateTime!
 	updatedAt: NaiveDateTime!
